@@ -36,19 +36,21 @@ describe("AppController (e2e)", () => {
       .expect(201)
       .then(({ body }: request.Response) => {
         createdId = body._id;
-        console.log(createdId);
         expect(createdId).toBeDefined();
       });
   });
 
-  it("/review/create (POST) - fail", () => {
-    return request(app.getHttpServer())
+  it("/review/create (POST) - fail", async () => {
+    return await request(app.getHttpServer())
       .post("/review/create")
       .send({
         ...testDto,
         rating: 0
       })
       .expect(400)
+      .then(({ body }: request.Response) => {
+        console.log(body)
+      });
   });
 
   it("/review/byProduct/:productId (GET) - success", async () => {
