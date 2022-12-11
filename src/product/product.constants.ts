@@ -1,1 +1,1 @@
-export const PRODUCT_NOT_FOUND = "Product not fount";
+export const PRODUCT_NOT_FOUND_ERROR = "Product not fount";

@@ -12,9 +12,10 @@ import {
   UsePipes,
   ValidationPipe,
 } from "@nestjs/common";
+import { IdValidationPipe } from "src/pipes/id-validation.pipe";
 import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 import { UserEmail } from "../decorators/userEmail.decorator";
-import { PRODUCT_NOT_FOUND } from "../product/product.constants";
+import { PRODUCT_NOT_FOUND_ERROR } from "../product/product.constants";
 import { CreateReviewDto } from "./dto/create-review.dto";
 import { REVIEW_NOT_FOUND } from "./review.constants";
 import { ReviewService } from "./review.service";
@@ -31,7 +32,7 @@ export class ReviewController {
   }
 
   @Delete(":id")
-  async delete(@Param("id") id: string) {
+  async delete(@Param("id", IdValidationPipe) id: string) {
     const deletedDoc = await this.reviewService.delete(id);
 
     if (!deletedDoc) {
@@ -42,18 +43,18 @@ export class ReviewController {
   @UseGuards(JwtAuthGuard)
   @Get("byProduct/:productId")
   async getByProduct(
-    @Param("productId") productId: string,
+    @Param("productId", IdValidationPipe) productId: string,
     @UserEmail() email: string,
   ) {
     return this.reviewService.findByProductId(productId);
   }
 
   @Delete("byProduct/:id")
-  async deleteByProductId(@Param("id") productId: string) {
+  async deleteByProductId(@Param("id", IdValidationPipe) productId: string) {
     const deletedDoc = await this.reviewService.deleteByProductId(productId);
 
     if (!deletedDoc) {
-      throw new HttpException(PRODUCT_NOT_FOUND, HttpStatus.NOT_FOUND);
+      throw new HttpException(PRODUCT_NOT_FOUND_ERROR, HttpStatus.NOT_FOUND);
     }
   }
 }
